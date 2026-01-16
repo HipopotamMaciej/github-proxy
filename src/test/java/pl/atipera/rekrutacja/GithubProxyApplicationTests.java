@@ -15,13 +15,13 @@ import org.springframework.web.client.RestClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Używam dynamicznych portów
-@WireMockTest(httpPort = 8081) // WireMock działa na porcie 8081
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WireMockTest(httpPort = 8081)
 @TestPropertySource(properties = "github.api.url=http://localhost:8081")
 class GithubProxyApplicationTests {
 
     @LocalServerPort
-    private int port; // Dynamiczny port serwera Spring Boot
+    private int port;
 
     @Autowired
     private RestClient.Builder builder;
@@ -42,7 +42,7 @@ class GithubProxyApplicationTests {
                 .uri("/api/repositories/nonexistent")
                 .header(HttpHeaders.ACCEPT, "application/json")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, (req, res) -> { /* Nie rzucaj wyjątku */ })
+                .onStatus(HttpStatusCode::isError, (req, res) -> {  })
                 .toEntity(ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -70,7 +70,7 @@ class GithubProxyApplicationTests {
 
         ResponseEntity<RepositoryResponse[]> response = client.get()
                 .uri("/api/repositories/john")
-                .header(HttpHeaders.ACCEPT, "application/json") // Ustawienie wymaganego nagłówka
+                .header(HttpHeaders.ACCEPT, "application/json")
                 .retrieve()
                 .toEntity(RepositoryResponse[].class);
 
@@ -93,7 +93,7 @@ class GithubProxyApplicationTests {
                 .uri("/api/repositories/john")
                 .header(HttpHeaders.ACCEPT, "application/xml")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, (req, res) -> { /* Nie rzucaj wyjątku */ })
+                .onStatus(HttpStatusCode::isError, (req, res) -> { })
                 .toEntity(ErrorResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
